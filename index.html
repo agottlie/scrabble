@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Scrabble</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="./main.js"></script>
+</head>
+
+<body>
+    <div class="instructions">
+        <h1>INSTRUCTIONS</h1>
+        <ul class="instructionsList">
+            <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore libero voluptas in facere atque provident quibusdam debitis cum possimus dolorem deserunt, cupiditate. Perferendis ex aperiam dolore earum nam quos ab!</li>
+            <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo modi ullam iure ratione qui totam voluptates, in corrupti deleniti fuga eos officia quidem reiciendis assumenda laboriosam magni veritatis iste id.</li>
+            <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut perspiciatis esse sequi vel necessitatibus doloremque distinctio! Quo minus tempora, neque distinctio odio velit animi explicabo rem aspernatur! Dolorem, sed, excepturi.</li>
+            <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda excepturi error ad, rerum itaque facilis, corporis aliquam, culpa obcaecati animi vel. Consequatur quasi obcaecati perspiciatis reiciendis eum minima quae magni?</li>
+            <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo incidunt nam, fuga repellat! Et, ad mollitia laudantium culpa repellat amet impedit pariatur? Ducimus, eius explicabo recusandae similique, sequi eveniet laborum!</li>
+        </ul>
+        <div class="playerNames">
+            <input type="text" placeholder="Player 1 Name" class="playerOneName">
+            <input type="text" placeholder="Player 2 Name" class="playerTwoName">
+        </div>
+        <button class="start">START</button>
+    </div>
+    <div class="container">
+        <div class="title">SCRABBLE</div>
+        <div class="gameBoard">
+            <div class="row">
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+            </div>
+            <div class="row">
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+            </div>
+            <div class="row">
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+            </div>
+            <div class="row">
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+            </div>
+            <div class="row">
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+            </div>
+            <div class="row">
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+            </div>
+            <div class="row">
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+            </div>
+            <div class="row">
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+            </div>
+            <div class="row">
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+            </div>
+            <div class="row">
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+            </div>
+        </div>
+        <div class="playerOneScoreBox textBox">
+            <h3>Player 1 Score</h3>
+            <div class="playerOneScore"></div>
+        </div>
+        <div class="playerTwoScoreBox textBox">
+            <h3>Player 2 Score</h3>
+            <div class="playerTwoScore"></div>
+        </div>
+        <div class="remainingTilesBox textBox">
+            <h3 id="textBox">Remaining Tiles</h3>
+            <div class="remainingTiles"></div>
+        </div>
+        <h2 class="tilesTitle">Your Tiles</h2>
+        <div class="playerOneTiles">
+            <div class="tilesRow">
+                <div class="playerOneTile tileBox"></div>
+                <div class="playerOneTile tileBox"></div>
+                <div class="playerOneTile tileBox"></div>
+                <div class="playerOneTile tileBox"></div>
+                <div class="playerOneTile tileBox"></div>
+                <div class="playerOneTile tileBox"></div>
+                <div class="playerOneTile tileBox"></div>
+            </div>
+        </div>
+        <div class="playerTwoTiles">
+            <div class="tilesRow">
+                <div class="playerTwoTile tileBox"></div>
+                <div class="playerTwoTile tileBox"></div>
+                <div class="playerTwoTile tileBox"></div>
+                <div class="playerTwoTile tileBox"></div>
+                <div class="playerTwoTile tileBox"></div>
+                <div class="playerTwoTile tileBox"></div>
+                <div class="playerTwoTile tileBox"></div>
+            </div>
+        </div>
+        <button class="refreshTiles">Refresh Tiles</button>
+    </div>
+</body>
+
+</html>

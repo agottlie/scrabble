@@ -1,0 +1,183 @@
+body {
+    margin: 0;
+}
+
+
+/*instructions*/
+
+.instructions {
+    text-align: center;
+    border: 1px solid black;
+    position: absolute;
+    background-color: black;
+    left: 50%;
+    top: 50%;
+    margin-top: -300px;
+    margin-left: -450px;
+    width: 900px;
+    height: 600px;
+    color: white;
+}
+
+.instructionsList {
+    text-align: left;
+    width: 60%;
+    margin: 30px auto;
+}
+
+input {
+    height: 50px;
+    width: 200px;
+    font-size: 30px;
+    margin: 0 50px;
+}
+
+.start {
+    height: 54px;
+    width: 150px;
+    font-size: 33px;
+    margin-top: 50px;
+    border-radius: 5%;
+}
+
+
+/*main screen*/
+
+.container {
+    background-color: beige;
+    height: 100vh;
+}
+
+.title {
+    text-align: center;
+    font-size: 80px
+}
+
+.textBox {
+    position: absolute;
+    border: 1px solid black;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+.playerOneScoreBox {
+    left: 20px;
+    top: 0;
+}
+
+.playerTwoScoreBox {
+    right: 20px;
+    top: 0;
+}
+
+.remainingTilesBox {
+    left: 20px;
+    top: 50%;
+}
+
+h3 {
+    font-size: 15px;
+    margin-top: 0;
+}
+
+
+/*game board*/
+
+.row {
+    position: relative;
+    width: 420px;
+    margin: 0 auto;
+}
+
+.box {
+    border: 1px solid black;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 50px;
+    float: left;
+    font-size: 50px;
+}
+
+.tilesTitle {
+	clear: both;
+	text-align: center;
+	position: relative;
+	top: 20px;
+}
+
+.playerOneTiles {
+	display: show;
+}
+
+.playerTwoTiles {
+	display: none;
+}
+
+.tilesRow {
+    clear: both;
+    position: relative;
+    top: 5px;
+    width: 294px;
+    margin: 20px auto;
+}
+
+.tileBox {
+    border: 1px solid black;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 50px;
+    float: left;
+    font-size: 50px;
+}
+
+.refreshTiles {
+    position: relative;
+    top: 10px;
+    left: 10px;
+    clear: both;
+    height: 36px;
+    width: 100px;
+    font-size: 12px;
+    border-radius: 5%;
+}
+
+@media (max-width: 800px) {
+    .row {
+        width: 320px;
+    }
+
+    .tilesRow {
+    	width: 224px;
+    }
+    .refreshTiles {
+    	height: 18px;
+    	width: 70px;
+    	font-size: 8px;
+    	top: 10px;
+    }
+    .box, .tileBox {
+        width: 30px;
+        height: 30px;
+    }
+    .title {
+        font-size: 40px;
+    }
+    h3 {
+        font-size: 10px;
+    }
+    .playerOneScoreBox {
+        left: 0;
+        top: 0;
+    }
+    .playerTwoScoreBox {
+        right: 0;
+        top: 0;
+    }
+    .remainingTilesBox {
+        top: 70%;
+    }
+}
