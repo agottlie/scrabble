@@ -7,7 +7,7 @@ body {
     text-align: center;
     border: 1px solid black;
     position: absolute;
-    background-color: black;
+    background-color: rgba(0,0,0,0.9);
     left: 50%;
     top: 50%;
     margin-top: -300px;
@@ -15,6 +15,7 @@ body {
     width: 900px;
     height: 600px;
     color: white;
+    z-index: 5;
 }
 
 .instructionsList {
@@ -44,6 +45,7 @@ input {
 .container {
     background-color: beige;
     height: 100vh;
+    display
 }
 
 .title {

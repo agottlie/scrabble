@@ -1,13 +1,20 @@
 $(function() {
 
-    //create board
-    for (i = 0; i < 15; i++) {
-        var newRow = $('<div class="row"></div>');
-        for (j = 0; j < 15; j++) {
-            var newBox = $('<div class="box"></div>');
-            newRow.append(newBox);
-        }
-        $('.gameBoard').append(newRow);
+    var shuffledBag = [];
+    var tempBag = [];
+    var selected = false;
+
+    //player objects
+    var playerOne = {
+        name: "",
+        score: 0,
+        rack: []
+    }
+
+    var playerTwo = {
+        name: "",
+        score: 0,
+        rack: []
     }
 
     //letters sourced from https://github.com/hanshuebner/html-scrabble/blob/master/client/javascript/scrabble.js
@@ -40,24 +47,36 @@ $(function() {
         { letter: "Z", score: 10, count: 1 }
     ]
 
-
-    //creates a temporary bag giving each tile its own array item
-    var tempBag = [];
-    while (tileBag.length > 0) {
-        tempBag.push(tileBag[0]);
-        tileBag[0].count--;
-        if (tileBag[0].count === 0) {
-            tileBag.shift();
+    //create board
+    var createBoard = function() {
+        for (i = 0; i < 15; i++) {
+            var newRow = $('<div class="row"></div>');
+            for (j = 0; j < 15; j++) {
+                var newBox = $('<div class="box"></div>');
+                newRow.append(newBox);
+            }
+            $('.gameBoard').append(newRow);
         }
     }
 
+    //creates a temporary bag giving each tile its own array item
+    var createTileBag = function() {
+        while (tileBag.length > 0) {
+            tempBag.push(tileBag[0]);
+            tileBag[0].count--;
+            if (tileBag[0].count === 0) {
+                tileBag.shift();
+            }
+        }
+    }
 
     //shuffles the bag
-    var shuffledBag = [];
-    while (tempBag.length > 0) {
-        var rndm = Math.floor(tempBag.length * Math.random());
-        shuffledBag.push(tempBag[rndm]);
-        tempBag.splice(rndm, 1);
+    var shuffleBag = function() {
+        while (tempBag.length > 0) {
+            var rndm = Math.floor(tempBag.length * Math.random());
+            shuffledBag.push(tempBag[rndm]);
+            tempBag.splice(rndm, 1);
+        }
     }
 
     //checks the contents of the shuffled bag
@@ -65,24 +84,16 @@ $(function() {
         console.log(tile.letter);
     });
 
-    //player objects
-    var playerOne = {
-        name: "",
-        score: 0,
-        rack: []
-    }
-
-    var playerTwo = {
-        name: "",
-        score: 0,
-        rack: []
-    }
-
-    var selected = false;
-
     //tallies up score and declares a winner
     var endGame = function() {};
 
+    var isItPlayerOnesTurn = function() {
+        if ($('.playerOneTiles').css("display") !== 'none') {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     //given a player, will fill their rack with up to 7 tiles
     var loadRack = function(player) {
@@ -100,13 +111,35 @@ $(function() {
         }
     }
 
-    var tallyScore = function() {}
+    var tallyScore = function() {
+        var counter = 0;
+        if (isItPlayerOnesTurn()) {
+            while (counter < playerOne.rack.length) {
+                if ($('.playerOneTile').eq(counter).css("display") === 'none') {
+                    playerOne.score += playerOne.rack[counter].score;
+                    playerOne.rack.splice(counter, 1);
+                    $('.playerOneTile').eq(counter).remove();
+                } else {
+                    counter++;
+                }
+            }
+        } else {
+            while (counter < playerTwo.rack.length) {
+                if ($('.playerTwoTile').eq(counter).css("display") === 'none') {
+                    playerTwo.score += playerTwo.rack[counter];
+                    playerTwo.rack.splice(counter, 1);
+                    $('.playerTwoTile').eq(counter).remove();
+                } else {
+                    counter++;
+                }
+            }
+        }
+    }
 
     //ends a turn and starts a new one
     var turn = function() {
         loadRack(playerOne);
         loadRack(playerTwo);
-
         setTimeout(function() {
             $('.playerOneTiles').toggle();
             $('.playerOneTitle').toggle();
@@ -118,16 +151,20 @@ $(function() {
         $('.remainingTiles').text(shuffledBag.length);
     }
 
+    createBoard();
+    createTileBag();
+    shuffleBag();
+
     //fade out instruction screen
     $('.start').click(function() {
-        // if (($('.playerOneName').val() !== "") && ($('.playerTwoName').val() !== "")) {
-        //     $('.instructions').fadeOut(1000);
-        //     turn();
-        // } else {
-        //     alert("Please make sure both players have entered their names!");
-        // }
-        $('.instructions').fadeOut(1000);
-        turn();
+        if (($('.playerOneName').val() !== "") && ($('.playerTwoName').val() !== "")) {
+            $('.instructions').fadeOut(1000);
+            $('.playerOneDisplayName').text($('.playerOneName').val() + "\'s Score");
+            $('.playerTwoDisplayName').text($('.playerTwoName').val() + "\'s Score");
+            turn();
+        } else {
+            alert("Please make sure both players have entered their names!");
+        }
     })
 
     $(document.body).on('click', '.tileBox', function() {
@@ -136,21 +173,22 @@ $(function() {
         selected = true;
     });
 
+
     $(document.body).on('click', '.box', function() {
         if (selected) {
             $(this).text($('.selected').text());
-            
-            $('.selected').remove();
+            $('.selected').hide();
             selected = false;
         }
     });
 
     $('.submitWord').click(function() {
-        if (playerOne.rack.length < 7 || playerTwo.rack.length < 7) {
-            tallyScore();
-            turn();
-            
-        }
+        //if (playerOne.rack.length < 7 || playerTwo.rack.length < 7) {
+        tallyScore();
+        turn();
+        console.log("Player 1 score: " + playerOne.score);
+        console.log("Player 2 score: " + playerTwo.score);
+        //}
     })
 
 
