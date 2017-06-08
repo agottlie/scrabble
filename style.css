@@ -2,9 +2,7 @@ body {
     margin: 0;
 }
 
-
 /*instructions*/
-
 .instructions {
     text-align: center;
     border: 1px solid black;
@@ -50,7 +48,7 @@ input {
 
 .title {
     text-align: center;
-    font-size: 80px
+    font-size: 60px
 }
 
 .textBox {
@@ -85,18 +83,18 @@ h3 {
 
 .row {
     position: relative;
-    width: 420px;
+    width: 480px;
     margin: 0 auto;
 }
 
 .box {
     border: 1px solid black;
     display: inline-block;
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     text-align: center;
     float: left;
-    font-size: 35px;
+    font-size: 25px;
 }
 
 .playerOneTitle,
@@ -121,23 +119,23 @@ h3 {
     clear: both;
     position: relative;
     top: 5px;
-    width: 294px;
+    width: 224px;
     margin: 20px auto;
 }
 
 .tileBox {
     border: 1px solid black;
     display: inline-block;
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     text-align: center;
     float: left;
-    font-size: 35px;
+    font-size: 25px;
 }
 
 .refreshTiles {
     position: relative;
-    top: 10px;
+    top: 3px;
     left: 10px;
     clear: both;
     height: 36px;
@@ -165,9 +163,13 @@ h3 {
     margin: 30px auto;
 }
 
+.selected {
+    border-color: red;
+}
+
 @media (max-width: 800px) {
     .row {
-        width: 320px;
+        width: 330px;
     }
     .tilesRow {
         width: 224px;
@@ -176,13 +178,13 @@ h3 {
         height: 18px;
         width: 70px;
         font-size: 8px;
-        top: 10px;
+        top: 5px;
     }
     .box,
     .tileBox {
-        width: 30px;
-        height: 30px;
-        font-size: 25px;
+        width: 20px;
+        height: 20px;
+        font-size: 18px;
     }
     .title {
         font-size: 40px;

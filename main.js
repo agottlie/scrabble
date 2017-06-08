@@ -1,5 +1,15 @@
 $(function() {
 
+    //create board
+    for (i = 0; i < 15; i++) {
+        var newRow = $('<div class="row"></div>');
+        for (j = 0; j < 15; j++) {
+            var newBox = $('<div class="box"></div>');
+            newRow.append(newBox);
+        }
+        $('.gameBoard').append(newRow);
+    }
+
     //letters sourced from https://github.com/hanshuebner/html-scrabble/blob/master/client/javascript/scrabble.js
     var tileBag = [
         { letter: "E", score: 1, count: 12 },
@@ -68,12 +78,11 @@ $(function() {
         rack: []
     }
 
-    var playerOneRack = $('.playerOneTile');
-    var playerTwoRack = $('.playerTwoTile');
-    console.log("test: " + playerTwoRack[3]);
+    var selected = false;
 
     //tallies up score and declares a winner
     var endGame = function() {};
+
 
     //given a player, will fill their rack with up to 7 tiles
     var loadRack = function(player) {
@@ -90,6 +99,8 @@ $(function() {
             }
         }
     }
+
+    var tallyScore = function() {}
 
     //ends a turn and starts a new one
     var turn = function() {
@@ -109,13 +120,39 @@ $(function() {
 
     //fade out instruction screen
     $('.start').click(function() {
-        if (($('.playerOneName').val() !== "") && ($('.playerTwoName').val() !== "")) {
-            $('.instructions').fadeOut(1000);
+        // if (($('.playerOneName').val() !== "") && ($('.playerTwoName').val() !== "")) {
+        //     $('.instructions').fadeOut(1000);
+        //     turn();
+        // } else {
+        //     alert("Please make sure both players have entered their names!");
+        // }
+        $('.instructions').fadeOut(1000);
+        turn();
+    })
+
+    $(document.body).on('click', '.tileBox', function() {
+        $('.tileBox').removeClass('selected');
+        $(this).addClass('selected');
+        selected = true;
+    });
+
+    $(document.body).on('click', '.box', function() {
+        if (selected) {
+            $(this).text($('.selected').text());
+            
+            $('.selected').remove();
+            selected = false;
+        }
+    });
+
+    $('.submitWord').click(function() {
+        if (playerOne.rack.length < 7 || playerTwo.rack.length < 7) {
+            tallyScore();
             turn();
-        } else {
-            alert("Please make sure both players have entered their names!");
+            
         }
     })
+
 
 
 
