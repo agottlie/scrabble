@@ -77,7 +77,7 @@ input {
 
 h3 {
     font-size: 15px;
-    margin-top: 0;
+    margin: 0;
 }
 
 
@@ -95,24 +95,26 @@ h3 {
     width: 40px;
     height: 40px;
     text-align: center;
-    line-height: 50px;
     float: left;
-    font-size: 50px;
+    font-size: 35px;
 }
 
-.tilesTitle {
-	clear: both;
-	text-align: center;
-	position: relative;
-	top: 20px;
+.playerOneTitle,
+.playerTwoTitle {
+    clear: both;
+    text-align: center;
+    position: relative;
+    top: 20px;
 }
 
-.playerOneTiles {
-	display: show;
+.playerOneTiles,
+.playerOneTitle {
+    display: none;
 }
 
-.playerTwoTiles {
-	display: none;
+.playerTwoTiles,
+.playerTwoTitle {
+    display: show;
 }
 
 .tilesRow {
@@ -129,9 +131,8 @@ h3 {
     width: 40px;
     height: 40px;
     text-align: center;
-    line-height: 50px;
     float: left;
-    font-size: 50px;
+    font-size: 35px;
 }
 
 .refreshTiles {
@@ -145,23 +146,43 @@ h3 {
     border-radius: 5%;
 }
 
+.playerOneScore,
+.playerTwoScore,
+.remainingTiles {
+    font-size: 35px;
+    text-align: center;
+    margin: 5px;
+}
+
+.submitWord {
+    clear: both;
+    position: relative;
+    height: 36px;
+    width: 100px;
+    font-size: 12px;
+    border-radius: 5%;
+    display: block;
+    margin: 30px auto;
+}
+
 @media (max-width: 800px) {
     .row {
         width: 320px;
     }
-
     .tilesRow {
-    	width: 224px;
+        width: 224px;
     }
     .refreshTiles {
-    	height: 18px;
-    	width: 70px;
-    	font-size: 8px;
-    	top: 10px;
+        height: 18px;
+        width: 70px;
+        font-size: 8px;
+        top: 10px;
     }
-    .box, .tileBox {
+    .box,
+    .tileBox {
         width: 30px;
         height: 30px;
+        font-size: 25px;
     }
     .title {
         font-size: 40px;
@@ -179,5 +200,12 @@ h3 {
     }
     .remainingTilesBox {
         top: 70%;
+    }
+    .playerOneScore,
+    .playerTwoScore,
+    .remainingTiles {
+        font-size: 25px;
+        text-align: center;
+        margin: 0;
     }
 }
