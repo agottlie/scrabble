@@ -2,12 +2,14 @@ body {
     margin: 0;
 }
 
+
 /*instructions*/
+
 .instructions {
     text-align: center;
     border: 1px solid black;
     position: absolute;
-    background-color: rgba(0,0,0,0.9);
+    background-color: rgba(0, 0, 0, 0.9);
     left: 50%;
     top: 50%;
     margin-top: -300px;
@@ -39,13 +41,60 @@ input {
     border-radius: 5%;
 }
 
+.letterValuesBox {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: -150px;
+    width: 200px;
+    height: 500px;
+    background-color: beige;
+    color: brown;
+    top: 50%;
+    margin-top: -250px;
+}
+
+.tab {
+    width: 50px;
+    height: 65px;
+    background-color: grey;
+    border-radius: 10% 0 0 10%;
+    display: flex;
+    flex-direction: column;
+    padding-top: 10px;
+    border: 1px solid black;
+    z-index: 3;
+}
+
+hr {
+    border: 1px solid black;
+    width: 70%;
+}
+
+.letterValues {
+    height: 500px;
+    width: 150px;
+    background-color: beige;
+    border: 1px solid black;
+    z-index: 3;
+}
+
+.slideLeft {
+    animation: moveLeft 2s;
+    animation-fill-mode: forwards
+}
+
+.slideRight {
+    animation: moveRight 2s;
+    animation-fill-mode: forwards
+}
+
 
 /*main screen*/
 
 .container {
     background-color: beige;
     height: 100vh;
-    display
 }
 
 .title {
@@ -112,12 +161,21 @@ h3 {
     display: none;
 }
 
+.playerOneTile {
+    background-color: green;
+}
+
 .playerTwoTiles,
 .playerTwoTitle {
     display: show;
 }
 
-.tilesRow {
+.playerTwoTile {
+    background-color: red;
+}
+
+.playerOneTilesRow,
+.playerTwoTilesRow {
     clear: both;
     position: relative;
     top: 5px;
@@ -135,7 +193,9 @@ h3 {
     font-size: 25px;
 }
 
-.refreshTiles {
+.refreshTiles,
+.backToRack,
+.showTiles {
     position: relative;
     top: 3px;
     left: 10px;
@@ -169,14 +229,31 @@ h3 {
     border-color: red;
 }
 
+.playerOneTilesRow,
+.playerTwoTilesRow {
+    display: none;
+}
+
+@keyframes moveLeft {
+    from {right: -150px;}
+    to {right: 0;}
+}
+
+@keyframes moveRight {
+    from {right: 0;}
+    to {right: -150px;}
+}
+
 @media (max-width: 800px) {
     .row {
         width: 330px;
     }
-    .tilesRow {
+    .playerOneTilesRow,
+    .playerTwoTilesRow {
         width: 224px;
     }
-    .refreshTiles {
+    .refreshTiles,
+    .backToRack, .showTiles {
         height: 18px;
         width: 70px;
         font-size: 8px;

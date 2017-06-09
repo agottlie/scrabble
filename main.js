@@ -2,7 +2,12 @@ $(function() {
 
     var shuffledBag = [];
     var tempBag = [];
+    var boardPositions = []
     var selected = false;
+    var tabCounter = 0;
+    var firstTurn = true;
+    var sameColumn = true;
+    var sameRow = true;
 
     //player objects
     var playerOne = {
@@ -53,10 +58,23 @@ $(function() {
             var newRow = $('<div class="row"></div>');
             for (j = 0; j < 15; j++) {
                 var newBox = $('<div class="box"></div>');
+                newBox.attr("data-row", i);
+                newBox.attr("data-column", j);
                 newRow.append(newBox);
+                var newPosition = [i, j];
+                boardPositions.push(newPosition);
             }
             $('.gameBoard').append(newRow);
         }
+    }
+
+    //creates the letter values key
+    var createLetterKey = function() {
+        tileBag.forEach(function(tile) {
+            var newListing = $('<li>');
+            newListing.text(tile.letter + ": " + tile.score + " points");
+            $('.letterValueList').append(newListing);
+        });
     }
 
     //creates a temporary bag giving each tile its own array item
@@ -79,14 +97,10 @@ $(function() {
         }
     }
 
-    //checks the contents of the shuffled bag
-    shuffledBag.forEach(function(tile) {
-        console.log(tile.letter);
-    });
-
     //tallies up score and declares a winner
     var endGame = function() {};
 
+    //determines whose turn it is
     var isItPlayerOnesTurn = function() {
         if ($('.playerOneTiles').css("display") !== 'none') {
             return true;
@@ -100,6 +114,13 @@ $(function() {
         for (i = player.rack.length; i < 7; i++) {
             player.rack.push(shuffledBag[0]);
             shuffledBag.shift();
+            if (player === playerOne) {
+                var newTileBox = $('<div class="playerOneTile tileBox"></div>');
+                $('.playerOneTilesRow').append(newTileBox);
+            } else {
+                var newTileBox = $('<div class="playerTwoTile tileBox"></div>');
+                $('.playerTwoTilesRow').append(newTileBox);
+            }
         }
 
         for (j = 0; j < 7; j++) {
@@ -126,7 +147,7 @@ $(function() {
         } else {
             while (counter < playerTwo.rack.length) {
                 if ($('.playerTwoTile').eq(counter).css("display") === 'none') {
-                    playerTwo.score += playerTwo.rack[counter];
+                    playerTwo.score += playerTwo.rack[counter].score;
                     playerTwo.rack.splice(counter, 1);
                     $('.playerTwoTile').eq(counter).remove();
                 } else {
@@ -138,25 +159,169 @@ $(function() {
 
     //ends a turn and starts a new one
     var turn = function() {
+        $('.playerOneTilesRow').hide();
+        $('.playerTwoTilesRow').hide();
+        $('.showTiles').show();
+
         loadRack(playerOne);
         loadRack(playerTwo);
-        setTimeout(function() {
-            $('.playerOneTiles').toggle();
-            $('.playerOneTitle').toggle();
-            $('.playerTwoTiles').toggle();
-            $('.playerTwoTitle').toggle();
-        }, 3000);
+
+        $('.playerOneTiles').toggle();
+        $('.playerOneTitle').toggle();
+        $('.playerTwoTiles').toggle();
+        $('.playerTwoTitle').toggle();
+
         $('.playerOneScore').text(playerOne.score);
         $('.playerTwoScore').text(playerTwo.score);
         $('.remainingTiles').text(shuffledBag.length);
     }
 
-    createBoard();
-    createTileBag();
-    shuffleBag();
+    var returnToRack = function() {
+        if (isItPlayerOnesTurn()) {
+            $('.playerOneTile').css("display", "inline-block");
+        } else {
+            console.log('hi');
+            $('.playerTwoTile').css("display", "inline-block");
+        }
+        $('.tempInPlay').text("");
+        $('.tempInPlay').removeClass('tempInPlay');
+    }
 
-    //fade out instruction screen
-    $('.start').click(function() {
+    var adjacentTiles = function(row, column, justRows, justColumns) {
+        var allAdjacents = [];
+        if (justColumns) {
+            if (row > 0) {
+                var above = $("[data-row=\'" + (row - 1) + "\'][data-column=\'" + column + "\']");
+                allAdjacents.push(above);
+            }
+            if (row < 14) {
+                var below = $("[data-row=\'" + (row + 1) + "\'][data-column=\'" + column + "\']");
+                allAdjacents.push(below);
+            }
+        }
+        if (justRows) {
+            if (column > 0) {
+                var left = $("[data-row=\'" + row + "\'][data-column=\'" + (column - 1) + "\']");
+                allAdjacents.push(left);
+            }
+            if (column < 14) {
+                var right = $("[data-row=\'" + row + "\'][data-column=\'" + (column + 1) + "\']");
+                allAdjacents.push(right);
+            }
+        }
+        return allAdjacents;
+    }
+
+    var correctOrientation = function() {
+        var row = $('.tempInPlay').eq(0).attr('data-row');
+        var column = $('.tempInPlay').eq(0).attr('data-column');
+        for (i = 0; i < $('.tempInPlay').length; i++) {
+            if ($('.tempInPlay').eq(i).attr('data-column') !== column) {
+                sameColumn = false;
+            }
+            if ($('.tempInPlay').eq(i).attr('data-row') !== row) {
+                sameRow = false;
+            }
+        }
+        return (sameRow || sameColumn);
+    }
+
+    var permanentAdjacent = function() {
+        for (i = 0; i < $('.tempInPlay').length; i++) {
+            var adjacentToMe = adjacentTiles(parseInt($('.tempInPlay').eq(i).attr('data-row')), parseInt($('.tempInPlay').eq(i).attr('data-column')), true, true);
+            for (j = 0; j < adjacentToMe.length; j++) {
+                if (adjacentToMe[j].hasClass('permInPlay')) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    var allTouching = function() {
+        var counter = 0;
+        if (sameRow) {
+            for (l = 0; l < $('.tempInPlay').length; l++) {
+                var adjacentToMe = adjacentTiles(parseInt($('.tempInPlay').eq(l).attr('data-row')), parseInt($('.tempInPlay').eq(l).attr('data-column')), true, false);
+                for (x = 0; x < adjacentToMe.length; x++) {
+                    if (!(adjacentToMe[x].hasClass('permInPlay') || adjacentToMe[x].hasClass('tempInPlay'))) {
+                        counter++;
+                    }
+                }
+                if (parseInt($('.tempInPlay').eq(l).attr('data-row')) === 0 || parseInt($('.tempInPlay').eq(l).attr('data-row')) === 14) {
+                    counter++;
+                }
+            }
+
+        } else if (sameColumn) {
+            for (l = 0; l < $('.tempInPlay').length; l++) {
+                var adjacentToMe = adjacentTiles(parseInt($('.tempInPlay').eq(l).attr('data-row')), parseInt($('.tempInPlay').eq(l).attr('data-column')), false, true);
+                for (x = 0; x < adjacentToMe.length; x++) {
+                    if (!(adjacentToMe[x].hasClass('permInPlay') || adjacentToMe[x].hasClass('tempInPlay'))) {
+                        counter++;
+                    }
+                }
+                if (parseInt($('.tempInPlay').eq(l).attr('data-column')) === 0 || parseInt($('.tempInPlay').eq(l).attr('data-column')) === 14) {
+                    counter++;
+                }
+            }
+        }
+        if (counter > 2) {
+            return false;
+        }
+        return true;
+    }
+
+    var submitWord = function() {
+        correctOrientation();
+        if ($('.tempInPlay').length > 0 && (firstTurn || permanentAdjacent()) && ($('.tempInPlay').length === 1 || correctOrientation()) && allTouching()) {
+            $('.tempInPlay').addClass('permInPlay');
+            $('.tempInPlay').removeClass('tempInPlay');
+            tallyScore();
+            turn();
+            firstTurn = false;
+            sameColumn = true;
+            sameRow = true;
+        }
+    }
+
+    var refreshTiles = function() {
+        returnToRack();
+        if (isItPlayerOnesTurn) {
+            while (playerOne.rack.length > 0) {
+                playerOne.rack.pop();
+                $('.playerOneTile').remove();
+            }
+        } else {
+            while (playerTwo.rack.length > 0) {
+                playerTwo.rack.pop();
+                $('.playerTwoTile').remove();
+            }
+        }
+        turn();
+    }
+
+    var showTiles = function() {
+        if (isItPlayerOnesTurn()) {
+            $('.playerOneTilesRow').show();
+        } else {
+            $('.playerTwoTilesRow').show();
+        }
+        $('.showTiles').hide();
+    }
+
+    var tabClick = function() {
+        if (tabCounter % 2 === 0) {
+            $('.letterValuesBox').removeClass('slideRight');
+            $('.letterValuesBox').addClass('slideLeft');
+        } else {
+            $('.letterValuesBox').removeClass('slideLeft');
+            $('.letterValuesBox').addClass('slideRight');
+        }
+        tabCounter++;
+    }
+
+    var startGame = function() {
         if (($('.playerOneName').val() !== "") && ($('.playerTwoName').val() !== "")) {
             $('.instructions').fadeOut(1000);
             $('.playerOneDisplayName').text($('.playerOneName').val() + "\'s Score");
@@ -165,7 +330,15 @@ $(function() {
         } else {
             alert("Please make sure both players have entered their names!");
         }
-    })
+    }
+
+    createBoard();
+    createLetterKey();
+    createTileBag();
+    shuffleBag();
+
+    //fade out instruction screen
+
 
     $(document.body).on('click', '.tileBox', function() {
         $('.tileBox').removeClass('selected');
@@ -173,23 +346,29 @@ $(function() {
         selected = true;
     });
 
-
     $(document.body).on('click', '.box', function() {
         if (selected) {
-            $(this).text($('.selected').text());
-            $('.selected').hide();
-            selected = false;
+            if (!($(this).hasClass('permInPlay')) && (!$(this).hasClass('tempInPlay'))) {
+                $(this).text($('.selected').text());
+                $(this).addClass('tempInPlay')
+                $('.selected').hide();
+                $('.selected').removeClass('selected');
+                selected = false;
+            }
         }
     });
 
-    $('.submitWord').click(function() {
-        //if (playerOne.rack.length < 7 || playerTwo.rack.length < 7) {
-        tallyScore();
-        turn();
-        console.log("Player 1 score: " + playerOne.score);
-        console.log("Player 2 score: " + playerTwo.score);
-        //}
-    })
+    $('.start').click(startGame);
+
+    $('.submitWord').click(submitWord);
+
+    $('.refreshTiles').click(refreshTiles);
+
+    $('.backToRack').click(returnToRack);
+
+    $('.showTiles').click(showTiles);
+
+    $('.tab').click(tabClick);
 
 
 
