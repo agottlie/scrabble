@@ -2,9 +2,7 @@ body {
     margin: 0;
 }
 
-
-/*instructions*/
-
+/*--------INSTRUCTIONS SCREEN-----------*/
 .instructions {
     text-align: center;
     border: 1px solid black;
@@ -41,6 +39,8 @@ input {
     border-radius: 5%;
 }
 
+
+/*-----LETTER VALUES BOX-------*/
 .letterValuesBox {
     display: flex;
     align-items: center;
@@ -90,7 +90,7 @@ hr {
 }
 
 
-/*main screen*/
+/*------MAIN GAME SCREEN--------*/
 
 .container {
     background-color: beige;
@@ -130,8 +130,7 @@ h3 {
 }
 
 
-/*game board*/
-
+/*----------GAME BOARD-----------*/
 .row {
     position: relative;
     width: 480px;
@@ -148,6 +147,15 @@ h3 {
     font-size: 25px;
 }
 
+.playerOneScore,
+.playerTwoScore,
+.remainingTiles {
+    font-size: 35px;
+    text-align: center;
+    margin: 5px;
+}
+
+/*----------TILE RACKS-----------*/
 .playerOneTitle,
 .playerTwoTitle {
     clear: both;
@@ -194,6 +202,17 @@ h3 {
     font-size: 25px;
 }
 
+.playerOneTilesRow,
+.playerTwoTilesRow {
+    display: none;
+}
+
+.selected {
+    border-color: red;
+}
+
+
+/*-----------BUTTONS-----------*/
 .refreshTiles,
 .backToRack,
 .showTiles,
@@ -215,14 +234,6 @@ h3 {
     margin: -18px 0 0 -50px;
 }
 
-.playerOneScore,
-.playerTwoScore,
-.remainingTiles {
-    font-size: 35px;
-    text-align: center;
-    margin: 5px;
-}
-
 .submitWord {
     clear: both;
     position: relative;
@@ -234,15 +245,8 @@ h3 {
     margin: 30px auto;
 }
 
-.selected {
-    border-color: red;
-}
 
-.playerOneTilesRow,
-.playerTwoTilesRow {
-    display: none;
-}
-
+/*---------KEYFRAMES---------*/
 @keyframes moveLeft {
     from {
         right: -150px;
@@ -261,6 +265,8 @@ h3 {
     }
 }
 
+
+/*-------MEDIA QUERIES----------*/
 @media (max-width: 800px) {
     .instructionsList {
         text-align: left;

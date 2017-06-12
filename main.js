@@ -9,10 +9,7 @@ $(function() {
     var firstTurn = true;
     var sameColumn = true;
     var sameRow = true;
-
-    //player objects
-    var playerOne = {}
-    var playerTwo = {}
+    var players = []
 
     //-------BEGIN FUNCTION DECLARATIONS------
 
@@ -28,16 +25,16 @@ $(function() {
             sameRow = true;
 
             //player objects
-            playerOne = {
+            players =[{
                 name: "",
                 score: 0,
                 rack: []
-            }
-            playerTwo = {
+            },
+            {
                 name: "",
                 score: 0,
                 rack: []
-            }
+            }]
         }
         //letters sourced from https://github.com/hanshuebner/html-scrabble/blob/master/client/javascript/scrabble.js
     var createBag = function() {
@@ -117,12 +114,11 @@ $(function() {
     //tallies up score and declares a winner
     var endGame = function() {
         //deducts remaining tile values from each player
-        playerOne.rack.forEach(function(tile) {
-            playerOne.score -= tile.score;
-        });
-        playerTwo.rack.forEach(function(tile) {
-            playerTwo.score -= tile.score;
-        });
+        players.forEach(function(player) {
+            player.rack.forEach(function(tile) {
+                player.score -= tile.score;
+            })
+        })
 
         //re-initializes the game board
         $('.tempInPlay').text("");
@@ -138,10 +134,10 @@ $(function() {
         $('.playerTwoTilesRow').hide();
 
         //winning conditions
-        if (playerOne.score > playerTwo.score) {
-            alert(playerOne.name + " is the winner!\nFinal score:\n" + playerOne.name + ": " + playerOne.score + " points\n" + playerTwo.name + ": " + playerTwo.score + " points");
-        } else if (playerOne.score < playerTwo.score) {
-            alert(playerTwo.name + " is the winner!\nFinal score:\n" + playerOne.name + ": " + playerOne.score + " points\n" + playerTwo.name + ": " + playerTwo.score + " points");
+        if (players[0].score > players[1].score) {
+            alert(players[0].name + " is the winner!\nFinal score:\n" + players[0].name + ": " + players[0].score + " points\n" + players[1].name + ": " + players[1].score + " points");
+        } else if (players[0].score < players[1].score) {
+            alert(players[1].name + " is the winner!\nFinal score:\n" + players[0].name + ": " + players[0].score + " points\n" + players[1].name + ": " + players[1].score + " points");
         } else {
             alert("It's a tie game!");
         }
@@ -170,7 +166,7 @@ $(function() {
             if (shuffledBag.length > 0) {
                 player.rack.push(shuffledBag[0]);
                 shuffledBag.shift();
-                if (player === playerOne) {
+                if (player === players[0]) {
                     var newTileBox = $('<div class="playerOneTile tileBox"></div>');
                     $('.playerOneTilesRow').append(newTileBox);
                 } else {
@@ -181,7 +177,7 @@ $(function() {
         }
 
         //updates the DOM to display the correct text on the player's rack
-        if (player === playerOne) {
+        if (player === players[0]) {
             for (j = 0; j < $('.playerOneTile').length; j++) {
                 $('.playerOneTile').eq(j).text(player.rack[j].letter);
             }
@@ -294,18 +290,18 @@ $(function() {
 
         //permanently removes tiles in play from player's rack
         if (isItPlayerOnesTurn()) {
-            while (counter < playerOne.rack.length) {
+            while (counter < player.rack.length) {
                 if ($('.playerOneTile').eq(counter).css("display") === 'none') {
-                    playerOne.rack.splice(counter, 1);
+                    player.rack.splice(counter, 1);
                     $('.playerOneTile').eq(counter).remove();
                 } else {
                     counter++;
                 }
             }
         } else {
-            while (counter < playerTwo.rack.length) {
+            while (counter < player.rack.length) {
                 if ($('.playerTwoTile').eq(counter).css("display") === 'none') {
-                    playerTwo.rack.splice(counter, 1);
+                    player.rack.splice(counter, 1);
                     $('.playerTwoTile').eq(counter).remove();
                 } else {
                     counter++;
@@ -320,12 +316,12 @@ $(function() {
         $('.playerTwoTilesRow').hide();
         $('.showTiles').show();
         if (shuffledBag.length > 0) {
-            loadRack(playerOne);
-            loadRack(playerTwo);
+            loadRack(players[0]);
+            loadRack(players[1]);
         }
 
         //conditions for going to the "end game" scenario
-        if (playerOne.rack.length === 0 || playerTwo.rack.length === 0) {
+        if (players[0].rack.length === 0 || players[1].rack.length === 0) {
             endGame();
         } else {
             $('.playerOneTiles').toggle();
@@ -333,8 +329,8 @@ $(function() {
             $('.playerTwoTiles').toggle();
             $('.playerTwoTitle').toggle();
 
-            $('.playerOneScore').text(playerOne.score);
-            $('.playerTwoScore').text(playerTwo.score);
+            $('.playerOneScore').text(players[0].score);
+            $('.playerTwoScore').text(players[1].score);
             $('.remainingTiles').text(shuffledBag.length);
         }
     }
@@ -440,9 +436,9 @@ $(function() {
         correctOrientation();
         if ($('.tempInPlay').length > 0 && (firstTurn || permanentAdjacent()) && ($('.tempInPlay').length === 1 || correctOrientation()) && allTouching()) {
             if (isItPlayerOnesTurn()) {
-                tallyScore(playerOne);
+                tallyScore(players[0]);
             } else {
-                tallyScore(playerTwo);
+                tallyScore(players[1]);
             }
             $('.tempInPlay').addClass('permInPlay');
             $('.tempInPlay').removeClass('tempInPlay');
@@ -457,19 +453,19 @@ $(function() {
     var refreshTiles = function() {
         returnToRack();
         if (isItPlayerOnesTurn()) {
-            playerOne.rack.forEach(function(tile) {
+            players[0].rack.forEach(function(tile) {
                 shuffledBag.splice(Math.floor(Math.random() * shuffledBag.length), 0, tile);
             });
-            while (playerOne.rack.length > 0) {
-                playerOne.rack.pop();
+            while (players[0].rack.length > 0) {
+                players[0].rack.pop();
             }
             $('.playerOneTile').remove();
         } else {
-            playerTwo.rack.forEach(function(tile) {
+            players[1].rack.forEach(function(tile) {
                 shuffledBag.splice(Math.floor(Math.random() * shuffledBag.length), 0, tile);
             });
-            while (playerTwo.rack.length > 0) {
-                playerTwo.rack.pop();
+            while (players[1].rack.length > 0) {
+                players[1].rack.pop();
             }
             $('.playerTwoTile').remove();
         }
@@ -502,10 +498,10 @@ $(function() {
     var startGame = function() {
         if (($('.playerOneName').val() !== "") && ($('.playerTwoName').val() !== "")) {
             $('.instructions').fadeOut(1000);
-            playerOne.name = $('.playerOneName').val();
-            playerTwo.name = $('.playerTwoName').val();
-            $('.playerOneDisplayName').text(playerOne.name + "\'s Score");
-            $('.playerTwoDisplayName').text(playerTwo.name + "\'s Score");
+            players[0].name = $('.playerOneName').val();
+            players[1].name = $('.playerTwoName').val();
+            $('.playerOneDisplayName').text(players[0].name + "\'s Score");
+            $('.playerTwoDisplayName').text(players[1].name + "\'s Score");
             turn();
         } else {
             alert("Please make sure both players have entered their names!");
@@ -522,6 +518,8 @@ $(function() {
         shuffleBag();
     }
 
+    //--------BEGIN FUNCTION DEPLOYMENT---------
+
     //run these the first time only
     resetGame();
     createBag();
@@ -529,6 +527,7 @@ $(function() {
     createLetterKey();
     startingProcedure();
 
+    //---------BEGIN EVENT LISTENERS---------------
 
     //visually marks a tile as 'selected' when clicked
     $(document.body).on('click', '.tileBox', function() {
