@@ -1,32 +1,45 @@
 $(function() {
 
+    //-------BEGIN FUNCTION DECLARATIONS------
 
-//-------BEGIN VARIABLE DECLARATIONS------
+    var shuffledBag = [];
+    var tempBag = [];
+    var selected = false;
+    var tabCounter = 0;
+    var firstTurn = true;
+    var sameColumn = true;
+    var sameRow = true;
+
+    //player objects
+    var playerOne = {}
+    var playerTwo = {}
+
+    //-------BEGIN FUNCTION DECLARATIONS------
+
     //resets everything
     var resetGame = function() {
-        //global variables
-        var shuffledBag = [];
-        var tempBag = [];
-        var selected = false;
-        var tabCounter = 0;
-        var firstTurn = true;
-        var sameColumn = true;
-        var sameRow = true;
+            //global variables
+            shuffledBag = [];
+            tempBag = [];
+            selected = false;
+            tabCounter = 0;
+            firstTurn = true;
+            sameColumn = true;
+            sameRow = true;
 
-        //player objects
-        var playerOne = {
-            name: "",
-            score: 0,
-            rack: []
+            //player objects
+            playerOne = {
+                name: "",
+                score: 0,
+                rack: []
+            }
+            playerTwo = {
+                name: "",
+                score: 0,
+                rack: []
+            }
         }
-        var playerTwo = {
-            name: "",
-            score: 0,
-            rack: []
-        }
-    }
-
-    //letters sourced from https://github.com/hanshuebner/html-scrabble/blob/master/client/javascript/scrabble.js
+        //letters sourced from https://github.com/hanshuebner/html-scrabble/blob/master/client/javascript/scrabble.js
     var createBag = function() {
         tileBag = [
             { letter: "E", score: 1, count: 12 },
@@ -183,8 +196,8 @@ $(function() {
     var letterValue = function(tile) {
         var selectedLetter = tile.text();
         createBag();
-        var selectedTile = tileBag.find(function(x) {
-            return x.letter === selectedLetter;
+        var selectedTile = tileBag.find(function(tile1) {
+            return tile1.letter === selectedLetter;
         });
         return selectedTile.score;
     }
@@ -203,76 +216,84 @@ $(function() {
     }
 
     //tallies the score from a given turn and adds it to the player's total
-    var tallyScore = function() {
+    var tallyScore = function(player) {
         var counter = 0;
         $(".counted").removeClass('counted');
-        if (isItPlayerOnesTurn()) {
-            for (var i = 0; i < $('.tempInPlay').length; i++) {
-                playerOne.score += letterValue($('.tempInPlay').eq(i));
-                var adjacentToMe = adjacentTiles(parseInt($('.tempInPlay').eq(i).attr('data-row')), parseInt($('.tempInPlay').eq(i).attr('data-column')), true, true, true, true);
-                for (j = 0; j < adjacentToMe.length; j++) {
-                    if (adjacentToMe[j].hasClass('permInPlay') && !(adjacentToMe[j].hasClass('counted'))) {
-                        playerOne.score += letterValue(adjacentToMe[j]);
-                        adjacentToMe[j].addClass('counted');
-                        if ((sameRow && (adjacentToMe[j].attr('data-column') === $('.tempInPlay').eq(i).attr('data-column'))) || (sameColumn && (adjacentToMe[j].attr('data-row') === $('.tempInPlay').eq(i).attr('data-row')))) {
-                            playerOne.score += letterValue($('.tempInPlay').eq(i));
-                        }
-                        var stop = false;
-                        if (direction($('.tempInPlay').eq(i), adjacentToMe[j]) === "left") {
-                            var dirCounter = 0;
-                            while (stop === false) {
-                                var nextOne = adjacentTiles(parseInt(adjacentToMe[j].attr('data-row')), parseInt(adjacentToMe[j].attr('data-column')) - dirCounter, false, false, true, false);
-                                if (nextOne.length > 0 && nextOne[0].hasClass("permInPlay") && !(nextOne[0].hasClass('counted'))) {
-                                    playerOne.score += letterValue(nextOne[0]);
-                                    nextOne[0].addClass("counted");
-                                    dirCounter++;
-                                } else {
-                                    stop = true;
-                                }
+
+        //checks each new tile added
+        for (var i = 0; i < $('.tempInPlay').length; i++) {
+            player.score += letterValue($('.tempInPlay').eq(i));
+            var adjacentToMe = adjacentTiles(parseInt($('.tempInPlay').eq(i).attr('data-row')), parseInt($('.tempInPlay').eq(i).attr('data-column')), true, true, true, true);
+
+            //iterates along each adjacent tile for each new tile added to the board
+            for (j = 0; j < adjacentToMe.length; j++) {
+                if (adjacentToMe[j].hasClass('permInPlay') && !(adjacentToMe[j].hasClass('counted'))) {
+                    player.score += letterValue(adjacentToMe[j]);
+                    adjacentToMe[j].addClass('counted');
+                    if ((sameRow && (adjacentToMe[j].attr('data-column') === $('.tempInPlay').eq(i).attr('data-column'))) || (sameColumn && (adjacentToMe[j].attr('data-row') === $('.tempInPlay').eq(i).attr('data-row')))) {
+                        player.score += letterValue($('.tempInPlay').eq(i));
+                    }
+                    var stop = false;
+
+                    //checks each direction of the current tile and keeps adding score values until edge of word or edge of board is reached
+                    if (direction($('.tempInPlay').eq(i), adjacentToMe[j]) === "left") {
+                        var dirCounter = 0;
+                        while (stop === false) {
+                            var nextOne = adjacentTiles(parseInt(adjacentToMe[j].attr('data-row')), parseInt(adjacentToMe[j].attr('data-column')) - dirCounter, false, false, true, false);
+                            if (nextOne.length > 0 && nextOne[0].hasClass("permInPlay") && !(nextOne[0].hasClass('counted'))) {
+                                player.score += letterValue(nextOne[0]);
+                                nextOne[0].addClass("counted");
+                                dirCounter++;
+                            } else {
+                                stop = true;
                             }
                         }
-                        if (direction($('.tempInPlay').eq(i), adjacentToMe[j]) === "right") {
-                            var dirCounter = 0;
-                            while (stop === false) {
-                                var nextOne = adjacentTiles(parseInt(adjacentToMe[j].attr('data-row')), parseInt(adjacentToMe[j].attr('data-column')) + dirCounter, false, false, false, true);
-                                if (nextOne.length > 0 && nextOne[0].hasClass("permInPlay") && !(nextOne[0].hasClass('counted'))) {
-                                    playerOne.score += letterValue(nextOne[0]);
-                                    nextOne[0].addClass("counted");
-                                    dirCounter++;
-                                } else {
-                                    stop = true;
-                                }
+                    }
+                    if (direction($('.tempInPlay').eq(i), adjacentToMe[j]) === "right") {
+                        var dirCounter = 0;
+                        while (stop === false) {
+                            var nextOne = adjacentTiles(parseInt(adjacentToMe[j].attr('data-row')), parseInt(adjacentToMe[j].attr('data-column')) + dirCounter, false, false, false, true);
+                            if (nextOne.length > 0 && nextOne[0].hasClass("permInPlay") && !(nextOne[0].hasClass('counted'))) {
+                                player.score += letterValue(nextOne[0]);
+                                nextOne[0].addClass("counted");
+                                dirCounter++;
+                            } else {
+                                stop = true;
                             }
                         }
-                        if (direction($('.tempInPlay').eq(i), adjacentToMe[j]) === "top") {
-                            var dirCounter = 0;
-                            while (stop === false) {
-                                var nextOne = adjacentTiles(parseInt(adjacentToMe[j].attr('data-row')) - dirCounter, parseInt(adjacentToMe[j].attr('data-column')), true, false, false, false);
-                                if (nextOne.length > 0 && nextOne[0].hasClass("permInPlay") && !(nextOne[0].hasClass('counted'))) {
-                                    playerOne.score += letterValue(nextOne[0]);
-                                    nextOne[0].addClass("counted");
-                                    dirCounter++;
-                                } else {
-                                    stop = true;
-                                }
+                    }
+                    if (direction($('.tempInPlay').eq(i), adjacentToMe[j]) === "top") {
+                        var dirCounter = 0;
+                        while (stop === false) {
+                            var nextOne = adjacentTiles(parseInt(adjacentToMe[j].attr('data-row')) - dirCounter, parseInt(adjacentToMe[j].attr('data-column')), true, false, false, false);
+                            if (nextOne.length > 0 && nextOne[0].hasClass("permInPlay") && !(nextOne[0].hasClass('counted'))) {
+                                player.score += letterValue(nextOne[0]);
+                                nextOne[0].addClass("counted");
+                                dirCounter++;
+                            } else {
+                                stop = true;
                             }
                         }
-                        if (direction($('.tempInPlay').eq(i), adjacentToMe[j]) === "bottom") {
-                            var dirCounter = 0;
-                            while (stop === false) {
-                                var nextOne = adjacentTiles(parseInt(adjacentToMe[j].attr('data-row')) + dirCounter, parseInt(adjacentToMe[j].attr('data-column')), false, true, false, false);
-                                if (nextOne.length > 0 && nextOne[0].hasClass("permInPlay") && !(nextOne[0].hasClass('counted'))) {
-                                    playerOne.score += letterValue(nextOne[0]);
-                                    nextOne[0].addClass("counted");
-                                    dirCounter++;
-                                } else {
-                                    stop = true;
-                                }
+                    }
+                    if (direction($('.tempInPlay').eq(i), adjacentToMe[j]) === "bottom") {
+                        var dirCounter = 0;
+                        while (stop === false) {
+                            var nextOne = adjacentTiles(parseInt(adjacentToMe[j].attr('data-row')) + dirCounter, parseInt(adjacentToMe[j].attr('data-column')), false, true, false, false);
+                            if (nextOne.length > 0 && nextOne[0].hasClass("permInPlay") && !(nextOne[0].hasClass('counted'))) {
+                                player.score += letterValue(nextOne[0]);
+                                nextOne[0].addClass("counted");
+                                dirCounter++;
+                            } else {
+                                stop = true;
                             }
                         }
                     }
                 }
             }
+        }
+
+        //permanently removes tiles in play from player's rack
+        if (isItPlayerOnesTurn()) {
             while (counter < playerOne.rack.length) {
                 if ($('.playerOneTile').eq(counter).css("display") === 'none') {
                     playerOne.rack.splice(counter, 1);
@@ -282,72 +303,6 @@ $(function() {
                 }
             }
         } else {
-            for (var i = 0; i < $('.tempInPlay').length; i++) {
-                playerTwo.score += letterValue($('.tempInPlay').eq(i));
-                var adjacentToMe = adjacentTiles(parseInt($('.tempInPlay').eq(i).attr('data-row')), parseInt($('.tempInPlay').eq(i).attr('data-column')), true, true, true, true);
-                for (j = 0; j < adjacentToMe.length; j++) {
-                    if (adjacentToMe[j].hasClass('permInPlay') && !(adjacentToMe[j].hasClass('counted'))) {
-                        playerTwo.score += letterValue(adjacentToMe[j]);
-                        adjacentToMe[j].addClass('counted');
-                        if ((sameRow && (adjacentToMe[j].attr('data-column') === $('.tempInPlay').eq(i).attr('data-column'))) || (sameColumn && (adjacentToMe[j].attr('data-row') === $('.tempInPlay').eq(i).attr('data-row')))) {
-                            playerTwo.score += letterValue($('.tempInPlay').eq(i));
-                        }
-                        var stop = false;
-                        if (direction($('.tempInPlay').eq(i), adjacentToMe[j]) === "left") {
-                            var dirCounter = 0;
-                            while (stop === false) {
-                                var nextOne = adjacentTiles(parseInt(adjacentToMe[j].attr('data-row')), parseInt(adjacentToMe[j].attr('data-column')) - dirCounter, false, false, true, false);
-                                if (nextOne.length > 0 && nextOne[0].hasClass("permInPlay") && !(nextOne[0].hasClass('counted'))) {
-                                    playerTwo.score += letterValue(nextOne[0]);
-                                    nextOne[0].addClass("counted");
-                                    dirCounter++;
-                                } else {
-                                    stop = true;
-                                }
-                            }
-                        }
-                        if (direction($('.tempInPlay').eq(i), adjacentToMe[j]) === "right") {
-                            var dirCounter = 0;
-                            while (stop === false) {
-                                var nextOne = adjacentTiles(parseInt(adjacentToMe[j].attr('data-row')), parseInt(adjacentToMe[j].attr('data-column')) + dirCounter, false, false, false, true);
-                                if (nextOne.length > 0 && nextOne[0].hasClass("permInPlay") && !(nextOne[0].hasClass('counted'))) {
-                                    playerTwo.score += letterValue(nextOne[0]);
-                                    nextOne[0].addClass("counted");
-                                    dirCounter++;
-                                } else {
-                                    stop = true;
-                                }
-                            }
-                        }
-                        if (direction($('.tempInPlay').eq(i), adjacentToMe[j]) === "top") {
-                            var dirCounter = 0;
-                            while (stop === false) {
-                                var nextOne = adjacentTiles(parseInt(adjacentToMe[j].attr('data-row')) - dirCounter, parseInt(adjacentToMe[j].attr('data-column')), true, false, false, false);
-                                if (nextOne.length > 0 && nextOne[0].hasClass("permInPlay") && !(nextOne[0].hasClass('counted'))) {
-                                    playerTwo.score += letterValue(nextOne[0]);
-                                    nextOne[0].addClass("counted");
-                                    dirCounter++;
-                                } else {
-                                    stop = true;
-                                }
-                            }
-                        }
-                        if (direction($('.tempInPlay').eq(i), adjacentToMe[j]) === "bottom") {
-                            var dirCounter = 0;
-                            while (stop === false) {
-                                var nextOne = adjacentTiles(parseInt(adjacentToMe[j].attr('data-row')) + dirCounter, parseInt(adjacentToMe[j].attr('data-column')), false, true, false, false);
-                                if (nextOne.length > 0 && nextOne[0].hasClass("permInPlay") && !(nextOne[0].hasClass('counted'))) {
-                                    playerTwo.score += letterValue(nextOne[0]);
-                                    nextOne[0].addClass("counted");
-                                    dirCounter++;
-                                } else {
-                                    stop = true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
             while (counter < playerTwo.rack.length) {
                 if ($('.playerTwoTile').eq(counter).css("display") === 'none') {
                     playerTwo.rack.splice(counter, 1);
@@ -369,6 +324,7 @@ $(function() {
             loadRack(playerTwo);
         }
 
+        //conditions for going to the "end game" scenario
         if (playerOne.rack.length === 0 || playerTwo.rack.length === 0) {
             endGame();
         } else {
@@ -383,6 +339,7 @@ $(function() {
         }
     }
 
+    //takes all tiles placed on the board from the current turn and returns them to that player's rack
     var returnToRack = function() {
         if (isItPlayerOnesTurn()) {
             $('.playerOneTile').css("display", "inline-block");
@@ -393,6 +350,7 @@ $(function() {
         $('.tempInPlay').removeClass('tempInPlay');
     }
 
+    //returns the DOM elements of all adjacent tiles; parameters determine which directions are checked
     var adjacentTiles = function(row, column, justAbove, justBelow, justLeft, justRight) {
         var allAdjacents = [];
         if (justAbove && row > 0) {
@@ -414,6 +372,7 @@ $(function() {
         return allAdjacents;
     }
 
+    //returns whether or not all newly placed tiles are all in a line (either vertically or horizontally)
     var correctOrientation = function() {
         var row = $('.tempInPlay').eq(0).attr('data-row');
         var column = $('.tempInPlay').eq(0).attr('data-column');
@@ -428,6 +387,7 @@ $(function() {
         return (sameRow || sameColumn);
     }
 
+    //returns whether at least one newly placed tile is touching a tile already on the board
     var permanentAdjacent = function() {
         for (i = 0; i < $('.tempInPlay').length; i++) {
             var adjacentToMe = adjacentTiles(parseInt($('.tempInPlay').eq(i).attr('data-row')), parseInt($('.tempInPlay').eq(i).attr('data-column')), true, true, true, true);
@@ -440,6 +400,7 @@ $(function() {
         return false;
     }
 
+    //returns whether or not all newly placed tiles are adjacent to each other
     var allTouching = function() {
         var counter = 0;
         if (sameRow) {
@@ -474,15 +435,15 @@ $(function() {
         return true;
     }
 
+    //checks to make sure all conditions for playing a word have been met, then tallies the score, and resets for the next turn
     var submitWord = function() {
         correctOrientation();
-        console.log("permanent adjacent?: " + permanentAdjacent());
-        console.log("correct Orientation?: " + correctOrientation());
-        console.log("all Touching?: " + allTouching());
-        console.log("same row?: " + sameRow);
-        console.log("same column?: " + sameColumn);
         if ($('.tempInPlay').length > 0 && (firstTurn || permanentAdjacent()) && ($('.tempInPlay').length === 1 || correctOrientation()) && allTouching()) {
-            tallyScore();
+            if (isItPlayerOnesTurn()) {
+                tallyScore(playerOne);
+            } else {
+                tallyScore(playerTwo);
+            }
             $('.tempInPlay').addClass('permInPlay');
             $('.tempInPlay').removeClass('tempInPlay');
             turn();
@@ -492,6 +453,7 @@ $(function() {
         }
     }
 
+    //takes all tiles in the player's rack and returns them to the bag
     var refreshTiles = function() {
         returnToRack();
         if (isItPlayerOnesTurn()) {
@@ -514,6 +476,7 @@ $(function() {
         turn();
     }
 
+    //reveals the current player's rack onscreen
     var showTiles = function() {
         if (isItPlayerOnesTurn()) {
             $('.playerOneTilesRow').show();
@@ -523,6 +486,7 @@ $(function() {
         $('.showTiles').hide();
     }
 
+    //opens or closes the letter key on right side of the screen
     var tabClick = function() {
         if (tabCounter % 2 === 0) {
             $('.letterValuesBox').removeClass('slideRight');
@@ -534,6 +498,7 @@ $(function() {
         tabCounter++;
     }
 
+    //checks that each player entered a name and removes the instruction screen and initializes the board screen
     var startGame = function() {
         if (($('.playerOneName').val() !== "") && ($('.playerTwoName').val() !== "")) {
             $('.instructions').fadeOut(1000);
@@ -547,6 +512,7 @@ $(function() {
         }
     }
 
+    //resets everything visually once the 'play again' button is clicked
     var startingProcedure = function() {
         $('.playAgain').hide();
         $('.container').show();
@@ -556,21 +522,22 @@ $(function() {
         shuffleBag();
     }
 
+    //run these the first time only
+    resetGame();
+    createBag();
     createBoard();
     createLetterKey();
-    createTileBag();
-    shuffleBag();
     startingProcedure();
 
-    //fade out instruction screen
 
-
+    //visually marks a tile as 'selected' when clicked
     $(document.body).on('click', '.tileBox', function() {
         $('.tileBox').removeClass('selected');
         $(this).addClass('selected');
         selected = true;
     });
 
+    //adds a tile to the board if nothing occupies that space already
     $(document.body).on('click', '.box', function() {
         if (selected) {
             if (!($(this).hasClass('permInPlay')) && (!$(this).hasClass('tempInPlay'))) {
@@ -583,18 +550,25 @@ $(function() {
         }
     });
 
+    //starts the game when the start button is clicked
     $('.start').click(startGame);
 
+    //runs the submitWord function when the submit button is clicked
     $('.submitWord').click(submitWord);
 
+    //refreshes the rack when the refresh tiles buttons is clicked
     $('.refreshTiles').click(refreshTiles);
 
+    //returns all tiles to the rack when the return to rack button is clicked
     $('.backToRack').click(returnToRack);
 
+    //reveals the tiles of the current player when the show tiles button is clicked
     $('.showTiles').click(showTiles);
 
+    //opens or closes the letter key when the tab is clicked
     $('.tab').click(tabClick);
 
+    //starts a new game when the play again button is clicked
     $('.playAgain').click(startingProcedure);
 
 });
