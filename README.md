@@ -7,10 +7,10 @@ This is the board game Scrabble, created with HTML, CSS, Javascript & JQuery.  T
 
 **HTML**
 
-<!-- <div class="playerOneScoreBox textBox">
+<div class="playerOneScoreBox textBox">
     <h3 class="playerOneDisplayName">Player 1 Score</h3>
     <div class="playerOneScore"></div>
-</div> -->
+</div>
 
 The HTML provided the basic structure of the game.  I chose to create the longer lists and grids in JS in order to keep this file readable.
 
@@ -67,7 +67,7 @@ This is a project assigned for the unit 1 project of Web Development Intensive a
 Landing Page: https://wireframe.cc/WGeEnP
 Game Page: https://wireframe.cc/UDcNmp
 
-##Approach
+## Approach
 
 This was a complex game that needed to be broken down into pieces each step of the way.  The instruction screen was easy enough to build out, and completing that along with HTML layout and CSS styling was the first thing I completed.
 
