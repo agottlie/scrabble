@@ -2,7 +2,6 @@ $(function() {
 
     var shuffledBag = [];
     var tempBag = [];
-    var boardPositions = []
     var selected = false;
     var tabCounter = 0;
     var firstTurn = true;
@@ -61,8 +60,6 @@ $(function() {
                 newBox.attr("data-row", i);
                 newBox.attr("data-column", j);
                 newRow.append(newBox);
-                var newPosition = [i, j];
-                boardPositions.push(newPosition);
             }
             $('.gameBoard').append(newRow);
         }
@@ -98,7 +95,83 @@ $(function() {
     }
 
     //tallies up score and declares a winner
-    var endGame = function() {};
+    var endGame = function() {
+        playerOne.rack.forEach(function(tile) {
+            playerOne.score -= tile.score;
+        });
+        playerTwo.rack.forEach(function(tile) {
+            playerTwo.score -= tile.score;
+        });
+        $('.tempInPlay').text("");
+        $('.permInPlay').text("");
+        $('.permInPlay').removeClass('permInPlay');
+        $('.playerOneTile').remove();
+        $('.playerTwoTile').remove();
+        $('.playerOneTiles').hide();
+        $('.playerOneTitle').hide();
+        $('.playerTwoTiles').show();
+        $('.playerTwoTitle').show();
+        $('.playerOneTilesRow').hide();
+        $('.playerTwoTilesRow').hide();
+
+        if (playerOne.score > playerTwo.score) {
+            alert(playerOne.name + " is the winner!\nFinal score:\n" + playerOne.name + ": " + playerOne.score + " points\n" + playerTwo.name + ": " + playerTwo.score + " points");
+        } else if (playerOne.score < playerTwo.score) {
+            alert(playerTwo.name + " is the winner!\nFinal score:\n" + playerOne.name + ": " + playerOne.score + " points\n" + playerTwo.name + ": " + playerTwo.score + " points");
+        } else {
+            alert("It's a tie game!");
+        }
+
+        tileBag = [
+            { letter: "E", score: 1, count: 12 },
+            { letter: "A", score: 1, count: 9 },
+            { letter: "I", score: 1, count: 9 },
+            { letter: "O", score: 1, count: 8 },
+            { letter: "N", score: 1, count: 6 },
+            { letter: "R", score: 1, count: 6 },
+            { letter: "T", score: 1, count: 6 },
+            { letter: "L", score: 1, count: 4 },
+            { letter: "S", score: 1, count: 4 },
+            { letter: "U", score: 1, count: 4 },
+            { letter: "D", score: 2, count: 4 },
+            { letter: "G", score: 2, count: 3 },
+            { letter: "B", score: 3, count: 2 },
+            { letter: "C", score: 3, count: 2 },
+            { letter: "M", score: 3, count: 2 },
+            { letter: "P", score: 3, count: 2 },
+            { letter: "F", score: 4, count: 2 },
+            { letter: "H", score: 4, count: 2 },
+            { letter: "V", score: 4, count: 2 },
+            { letter: "W", score: 4, count: 2 },
+            { letter: "Y", score: 4, count: 2 },
+            { letter: "K", score: 5, count: 1 },
+            { letter: "J", score: 8, count: 1 },
+            { letter: "X", score: 8, count: 1 },
+            { letter: "Q", score: 10, count: 1 },
+            { letter: "Z", score: 10, count: 1 }
+        ]
+        playerOne = {
+            name: "",
+            score: 0,
+            rack: []
+        }
+
+        playerTwo = {
+            name: "",
+            score: 0,
+            rack: []
+        }
+        shuffledBag = [];
+        tempBag = [];
+        selected = false;
+        tabCounter = 0;
+        firstTurn = true;
+        sameColumn = true;
+        sameRow = true;
+        $('.container').hide();
+        $('.letterValuesBox').hide();
+        $('.playAgain').show();
+    };
 
     //determines whose turn it is
     var isItPlayerOnesTurn = function() {
@@ -112,21 +185,27 @@ $(function() {
     //given a player, will fill their rack with up to 7 tiles
     var loadRack = function(player) {
         for (i = player.rack.length; i < 7; i++) {
-            player.rack.push(shuffledBag[0]);
-            shuffledBag.shift();
-            if (player === playerOne) {
-                var newTileBox = $('<div class="playerOneTile tileBox"></div>');
-                $('.playerOneTilesRow').append(newTileBox);
-            } else {
-                var newTileBox = $('<div class="playerTwoTile tileBox"></div>');
-                $('.playerTwoTilesRow').append(newTileBox);
+            console.log(i);
+            if (shuffledBag.length > 0) {
+                player.rack.push(shuffledBag[0]);
+                shuffledBag.shift();
+                if (player === playerOne) {
+                    var newTileBox = $('<div class="playerOneTile tileBox"></div>');
+                    $('.playerOneTilesRow').append(newTileBox);
+                } else {
+                    var newTileBox = $('<div class="playerTwoTile tileBox"></div>');
+                    $('.playerTwoTilesRow').append(newTileBox);
+                }
             }
         }
 
-        for (j = 0; j < 7; j++) {
-            if (player === playerOne) {
+
+        if (player === playerOne) {
+            for (j = 0; j < $('.playerOneTile').length; j++) {
                 $('.playerOneTile').eq(j).text(player.rack[j].letter);
-            } else {
+            }
+        } else {
+            for (j = 0; j < $('.playerTwoTile').length; j++) {
                 $('.playerTwoTile').eq(j).text(player.rack[j].letter);
             }
         }
@@ -162,25 +241,29 @@ $(function() {
         $('.playerOneTilesRow').hide();
         $('.playerTwoTilesRow').hide();
         $('.showTiles').show();
+        if (shuffledBag.length > 0) {
+            loadRack(playerOne);
+            loadRack(playerTwo);
+        }
 
-        loadRack(playerOne);
-        loadRack(playerTwo);
+        if (playerOne.rack.length === 0 || playerTwo.rack.length === 0) {
+            endGame();
+        } else {
+            $('.playerOneTiles').toggle();
+            $('.playerOneTitle').toggle();
+            $('.playerTwoTiles').toggle();
+            $('.playerTwoTitle').toggle();
 
-        $('.playerOneTiles').toggle();
-        $('.playerOneTitle').toggle();
-        $('.playerTwoTiles').toggle();
-        $('.playerTwoTitle').toggle();
-
-        $('.playerOneScore').text(playerOne.score);
-        $('.playerTwoScore').text(playerTwo.score);
-        $('.remainingTiles').text(shuffledBag.length);
+            $('.playerOneScore').text(playerOne.score);
+            $('.playerTwoScore').text(playerTwo.score);
+            $('.remainingTiles').text(shuffledBag.length);
+        }
     }
 
     var returnToRack = function() {
         if (isItPlayerOnesTurn()) {
             $('.playerOneTile').css("display", "inline-block");
         } else {
-            console.log('hi');
             $('.playerTwoTile').css("display", "inline-block");
         }
         $('.tempInPlay').text("");
@@ -287,16 +370,22 @@ $(function() {
 
     var refreshTiles = function() {
         returnToRack();
-        if (isItPlayerOnesTurn) {
+        if (isItPlayerOnesTurn()) {
+            // playerOne.rack.forEach(function(tile) {
+            //     shuffledBag.splice(Math.floor(Math.random() * shuffledBag.length), 0, tile);
+            // });
             while (playerOne.rack.length > 0) {
                 playerOne.rack.pop();
-                $('.playerOneTile').remove();
             }
+            $('.playerOneTile').remove();
         } else {
+            // playerTwo.rack.forEach(function(tile) {
+            //     shuffledBag.splice(Math.floor(Math.random() * shuffledBag.length), 0, tile);
+            // });
             while (playerTwo.rack.length > 0) {
                 playerTwo.rack.pop();
-                $('.playerTwoTile').remove();
             }
+            $('.playerTwoTile').remove();
         }
         turn();
     }
@@ -324,18 +413,30 @@ $(function() {
     var startGame = function() {
         if (($('.playerOneName').val() !== "") && ($('.playerTwoName').val() !== "")) {
             $('.instructions').fadeOut(1000);
-            $('.playerOneDisplayName').text($('.playerOneName').val() + "\'s Score");
-            $('.playerTwoDisplayName').text($('.playerTwoName').val() + "\'s Score");
+            playerOne.name = $('.playerOneName').val();
+            playerTwo.name = $('.playerTwoName').val();
+            $('.playerOneDisplayName').text(playerOne.name + "\'s Score");
+            $('.playerTwoDisplayName').text(playerTwo.name + "\'s Score");
             turn();
         } else {
             alert("Please make sure both players have entered their names!");
         }
     }
 
+    var startingProcedure = function() {
+        $('.playAgain').hide();
+        $('.container').show();
+        $('.letterValuesBox').show();
+        $('.instructions').fadeIn();
+        createTileBag();
+        shuffleBag();
+    }
+
     createBoard();
     createLetterKey();
     createTileBag();
     shuffleBag();
+    startingProcedure();
 
     //fade out instruction screen
 
@@ -369,6 +470,8 @@ $(function() {
     $('.showTiles').click(showTiles);
 
     $('.tab').click(tabClick);
+
+    $('.playAgain').click(startingProcedure);
 
 
 

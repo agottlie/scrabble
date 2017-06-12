@@ -161,17 +161,15 @@ h3 {
     display: none;
 }
 
-.playerOneTile {
-    background-color: green;
+.playerOneTile, .playerTwoTile, .permInPlay, .tempInPlay {
+    background-image: url("./tile.jpeg");
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 .playerTwoTiles,
 .playerTwoTitle {
     display: show;
-}
-
-.playerTwoTile {
-    background-color: red;
 }
 
 .playerOneTilesRow,
@@ -195,7 +193,7 @@ h3 {
 
 .refreshTiles,
 .backToRack,
-.showTiles {
+.showTiles, .playAgain {
     position: relative;
     top: 3px;
     left: 10px;
@@ -204,6 +202,13 @@ h3 {
     width: 100px;
     font-size: 12px;
     border-radius: 5%;
+}
+
+.playAgain {
+    display: none;
+    top: 50vh;
+    left: 50%;
+    margin: -18px 0 0 -50px;
 }
 
 .playerOneScore,
