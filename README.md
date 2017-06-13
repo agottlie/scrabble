@@ -7,10 +7,10 @@ This is the board game Scrabble, created with HTML, CSS, Javascript & JQuery.  T
 
 **HTML**
 
-<div class="playerOneScoreBox textBox">
+'<div class="playerOneScoreBox textBox">
     <h3 class="playerOneDisplayName">Player 1 Score</h3>
     <div class="playerOneScore"></div>
-</div>
+</div>'
 
 The HTML provided the basic structure of the game.  I chose to create the longer lists and grids in JS in order to keep this file readable.
 
