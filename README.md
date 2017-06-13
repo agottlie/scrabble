@@ -7,16 +7,19 @@ This is the board game Scrabble, created with HTML, CSS, Javascript & JQuery.  T
 
 **HTML**
 
-<!-- <div class="playerOneScoreBox textBox">
+```html
+<div class="playerOneScoreBox textBox">
     <h3 class="playerOneDisplayName">Player 1 Score</h3>
     <div class="playerOneScore"></div>
-</div> -->
+</div>
+```
 
 The HTML provided the basic structure of the game.  I chose to create the longer lists and grids in JS in order to keep this file readable.
 
 
 **CSS**
 
+```css
 .instructions {
     text-align: center;
     border: 1px solid black;
@@ -31,11 +34,13 @@ The HTML provided the basic structure of the game.  I chose to create the longer
     color: white;
     z-index: 5;
 }
+```
 
 The styling for this game was not overly fussy - mostly just providing a clean game environment with easy to read text and no distractions.
 
 **Javascript**
 
+```javascript
 var submitWord = function() {
         correctOrientation();
         if ($('.tempInPlay').length > 0 && (firstTurn || permanentAdjacent()) && ($('.tempInPlay').length === 1 || correctOrientation()) && allTouching()) {
@@ -52,6 +57,7 @@ var submitWord = function() {
             sameRow = true;
         }
     }
+```
 
 The JS file is arranged with variables and functions at the top of the page, function deployment immediately afterwards, and event listeners at the bottom. The vast majority of the DOM manipulation was done with JQuery - I've become pretty comfortable using this and usually prefer it to vanilla JS except in a few cases.  All event listeners use JQuery.
 
@@ -65,9 +71,14 @@ This is a project assigned for the unit 1 project of Web Development Intensive a
 ## Wireframes
 
 Landing Page:
-![alt text](https://github.com/agottlie/scrabble/blob/master/instuction_screen.png)
 
-Game Page: https://wireframe.cc/UDcNmp
+
+![](./instruction_screen.png)
+
+Game Page:
+
+
+![](./game_screen.png)
 
 ## Approach
 
