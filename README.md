@@ -84,3 +84,7 @@ I was not able to get to any of my more complex reach goals.  Doing a word check
 ## Installation
 
 The game can be accessed and played at https://agottlie.github.io/scrabble/
+
+## Presentation
+
+https://docs.google.com/presentation/d/1EJQyffWZyEEpUlI-9brocxEO2-qZrm_Hj7-y2wRkf1w/edit?usp=sharing
