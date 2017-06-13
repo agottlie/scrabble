@@ -64,7 +64,9 @@ This is a project assigned for the unit 1 project of Web Development Intensive a
 
 ## Wireframes
 
-Landing Page: https://wireframe.cc/WGeEnP
+Landing Page:
+![alt text](https://github.com/agottlie/scrabble/blob/master/instuction_screen.png)
+
 Game Page: https://wireframe.cc/UDcNmp
 
 ## Approach
