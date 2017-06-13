@@ -370,6 +370,8 @@ $(function() {
 
     //returns whether or not all newly placed tiles are all in a line (either vertically or horizontally)
     var correctOrientation = function() {
+        sameColumn = true;
+        sameRow = true;
         var row = $('.tempInPlay').eq(0).attr('data-row');
         var column = $('.tempInPlay').eq(0).attr('data-column');
         for (i = 0; i < $('.tempInPlay').length; i++) {
